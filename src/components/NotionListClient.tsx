@@ -25,87 +25,86 @@ export default function NotionListClient({ dbId, basePath, pageTitle, pageSubtit
 
   useEffect(() => {
     let cancelled = false;
-
     async function load() {
       try {
         setLoading(true);
         setError(null);
-        const response = await fetch(`/api/notion/database/${encodeURIComponent(dbId)}`, {
-          cache: "no-store",
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch articles");
-        }
-
-        const data = (await response.json()) as { items?: NotionListItem[] };
-        if (!cancelled) {
-          setItems(data.items ?? []);
-        }
+        const res = await fetch(`/api/notion/database/${encodeURIComponent(dbId)}`, { cache: "no-store" });
+        if (!res.ok) throw new Error("Failed to fetch");
+        const data = (await res.json()) as { items?: NotionListItem[] };
+        if (!cancelled) setItems(data.items ?? []);
       } catch (err) {
-        if (!cancelled) {
-          setError(err instanceof Error ? err.message : "Unknown error");
-        }
+        if (!cancelled) setError(err instanceof Error ? err.message : "Unknown error");
       } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
+        if (!cancelled) setLoading(false);
       }
     }
-
     load();
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [dbId]);
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-6 py-10 md:px-8">
-      <div className="mb-8 flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold text-[#e5e5e5] md:text-3xl">{pageTitle}</h1>
-          <p className="mt-2 text-sm text-[#9ca3af]">{pageSubtitle}</p>
-        </div>
-        <Link
-          href="/"
-          className="rounded-md border border-[#222222] bg-[#111111] px-3 py-2 text-sm text-[#d1d5db] transition-colors hover:border-[#06b6d4]/60 hover:text-[#06b6d4]"
-        >
-          Back
+    <div className="mx-auto w-full max-w-6xl px-5 py-12 md:px-8">
+      {/* Header */}
+      <div className="mb-10">
+        <Link href="/" className="mb-4 inline-flex items-center gap-1 text-xs text-[#555] transition-colors hover:text-[#06b6d4]">
+          <span>←</span> <span>首页</span>
         </Link>
+        <h1 className="text-3xl font-bold text-white md:text-4xl">{pageTitle}</h1>
+        <p className="mt-2 text-sm text-[#666]">{pageSubtitle}</p>
       </div>
 
-      {loading ? <p className="text-[#9ca3af]">Loading...</p> : null}
-      {error ? <p className="text-red-400">{error}</p> : null}
+      {/* Loading skeleton */}
+      {loading && (
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="animate-pulse rounded-xl border border-[#1a1a1a] bg-[#111]">
+              <div className="h-40 rounded-t-xl bg-[#181818]" />
+              <div className="p-4"><div className="h-4 w-3/4 rounded bg-[#1a1a1a]" /></div>
+            </div>
+          ))}
+        </div>
+      )}
 
-      {!loading && !error ? (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      {error && <p className="text-red-400 text-sm">{error}</p>}
+
+      {/* Grid */}
+      {!loading && !error && items.length > 0 && (
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((item) => (
             <Link
               key={item.id}
               href={`${basePath}/${item.id}`}
-              className="group block overflow-hidden rounded-xl border border-[#222222] bg-[#111111] transition-all hover:-translate-y-[1px] hover:border-[#06b6d4]/60"
+              className="group overflow-hidden rounded-xl border border-[#1a1a1a] bg-[#111] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#06b6d4]/30 hover:shadow-lg hover:shadow-[#06b6d4]/5"
             >
               {item.cover ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={item.cover}
                   alt={item.title}
-                  className="h-44 w-full object-cover opacity-90 transition-opacity group-hover:opacity-100"
+                  className="h-40 w-full object-cover opacity-85 transition-all duration-500 group-hover:opacity-100 group-hover:scale-[1.02]"
                 />
               ) : (
-                <div className="h-44 w-full bg-gradient-to-br from-[#111111] via-[#171717] to-[#0f172a]" />
+                <div className="flex h-40 w-full items-center justify-center bg-gradient-to-br from-[#111] to-[#0a1628]">
+                  <span className="text-3xl opacity-20">✦</span>
+                </div>
               )}
               <div className="p-4">
-                <h2 className="line-clamp-2 text-lg font-medium text-[#e5e5e5]">{item.title}</h2>
+                <h2 className="line-clamp-2 text-[15px] font-medium leading-snug text-[#e5e5e5] transition-colors group-hover:text-white">
+                  {item.title}
+                </h2>
               </div>
             </Link>
           ))}
         </div>
-      ) : null}
+      )}
 
-      {!loading && !error && items.length === 0 ? (
-        <p className="text-[#9ca3af]">No published content yet.</p>
-      ) : null}
+      {!loading && !error && items.length === 0 && (
+        <div className="flex flex-col items-center py-20 text-[#555]">
+          <span className="text-4xl mb-3">✦</span>
+          <p className="text-sm">暂无已发布内容</p>
+        </div>
+      )}
     </div>
   );
 }

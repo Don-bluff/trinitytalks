@@ -158,3 +158,18 @@ async function fetchChildrenRecursively(blockId: string): Promise<NotionBlock[]>
 export async function getPageBlocks(pageId: string): Promise<NotionBlock[]> {
   return fetchChildrenRecursively(pageId);
 }
+
+export async function getPageTitle(pageId: string): Promise<string> {
+  try {
+    const normalizedId = normalizeNotionId(pageId);
+    const page = await notion.pages.retrieve({ page_id: normalizedId }) as NotionPageObject;
+    const titleProp = Object.values(page.properties ?? {}).find(
+      (p: Record<string, unknown>) => p.type === "title"
+    ) as Record<string, unknown> | undefined;
+    if (!titleProp) return "";
+    const titleArr = titleProp.title as Array<{ plain_text?: string }> | undefined;
+    return titleArr?.map((t) => t.plain_text ?? "").join("") ?? "";
+  } catch {
+    return "";
+  }
+}

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getPageBlocks } from "@/lib/notion";
+import { getPageBlocks, getPageTitle } from "@/lib/notion";
 
 export async function GET(
   _request: Request,
@@ -11,8 +11,9 @@ export async function GET(
       return NextResponse.json({ error: "Page id is required" }, { status: 400 });
     }
 
-    const blocks = await getPageBlocks(decodeURIComponent(pageId));
-    return NextResponse.json({ blocks });
+    const id = decodeURIComponent(pageId);
+    const [blocks, title] = await Promise.all([getPageBlocks(id), getPageTitle(id)]);
+    return NextResponse.json({ blocks, title });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to fetch page blocks";
     return NextResponse.json({ error: message }, { status: 500 });

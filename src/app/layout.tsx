@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { Geist } from "next/font/google";
 import "./globals.css";
 
@@ -9,8 +10,8 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "TrinityTalks",
-  description: "TrinityTalks - 三元空间 · 知识与搞钱",
+  title: "TrinityTalks — 三元空间",
+  description: "知识与搞钱 · 思想、认知、商业智慧",
 };
 
 export default function RootLayout({
@@ -21,11 +22,16 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <body className={`${geistSans.variable} antialiased`}>
-        <header className="border-b border-[#222222] bg-[#0a0a0a]/90 backdrop-blur">
-          <div className="mx-auto flex h-16 w-full max-w-5xl items-center px-6 md:px-8">
-            <Link href="/" className="text-lg font-medium tracking-tight text-[#e5e5e5] hover:text-[#06b6d4]">
-              TrinityTalks
+        <header className="sticky top-0 z-50 border-b border-[#1a1a1a] bg-[#0a0a0a]/80 backdrop-blur-xl">
+          <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between px-5 md:px-8">
+            <Link href="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-80">
+              <Image src="/logo.jpg" alt="TrinityTalks" width={28} height={28} className="rounded-md" />
+              <span className="text-[15px] font-semibold tracking-tight text-[#e5e5e5]">TrinityTalks</span>
             </Link>
+            <nav className="flex items-center gap-5">
+              <Link href="/column" className="text-[13px] text-[#888] transition-colors hover:text-[#06b6d4]">专栏</Link>
+              <Link href="/money" className="text-[13px] text-[#888] transition-colors hover:text-[#06b6d4]">搞钱</Link>
+            </nav>
           </div>
         </header>
         {children}
