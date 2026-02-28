@@ -1,6 +1,7 @@
 "use client";
 
 import type { CSSProperties, ReactNode } from "react";
+import SrtPlayer from "@/components/SrtPlayer";
 
 type Annotations = {
   bold?: boolean;
@@ -233,6 +234,10 @@ function renderSingleBlock(block: NotionBlock): ReactNode {
       const url = getMediaUrl(data);
       const name = typeof data.name === "string" ? data.name : "Download file";
       if (!url) return null;
+      // Render SRT player for subtitle files
+      if (name.toLowerCase().endsWith(".srt")) {
+        return <SrtPlayer srtUrl={url} />;
+      }
       return (
         <a
           href={url}
