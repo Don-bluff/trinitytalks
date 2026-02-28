@@ -82,8 +82,8 @@ export async function queryDatabaseItems(dbId: string): Promise<NotionListItem[]
   let startCursor: string | undefined;
 
   while (hasMore) {
-    const response = await notion.dataSources.query({
-      data_source_id: normalizedId,
+    const response = await notion.databases.query({
+      database_id: normalizedId,
       start_cursor: startCursor,
       page_size: 100,
     });
