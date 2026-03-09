@@ -31,6 +31,7 @@ export default function RootLayout({
             <nav className="flex items-center gap-5">
               <Link href="/column" className="text-[13px] text-[#888] transition-colors hover:text-[#06b6d4]">专栏</Link>
               <Link href="/money" className="text-[13px] text-[#888] transition-colors hover:text-[#06b6d4]">搞钱</Link>
+              <Link href="/pricing" className="text-[13px] text-[#888] transition-colors hover:text-[#06b6d4]">订阅</Link>
             </nav>
           </div>
         </header>
