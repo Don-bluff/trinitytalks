@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { Geist } from "next/font/google";
+import UserStatusBar from "@/components/UserStatusBar";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -22,6 +23,7 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <body className={`${geistSans.variable} antialiased`}>
+        <UserStatusBar />
         <header className="sticky top-0 z-50 border-b border-[#1a1a1a] bg-[#0a0a0a]/80 backdrop-blur-xl">
           <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between px-5 md:px-8">
             <Link href="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-80">
