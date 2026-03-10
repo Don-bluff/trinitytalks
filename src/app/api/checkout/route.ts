@@ -6,8 +6,8 @@ function getStripe() {
 }
 
 const PRICE_MAP: Record<string, string | undefined> = {
-  monthly: process.env.STRIPE_PRICE_MONTHLY,
-  annual: process.env.STRIPE_PRICE_ANNUAL,
+  monthly: process.env.STRIPE_PRICE_MONTHLY,   // price_1Rg3oMFLObIryadOjilV5pk5
+  annual: process.env.STRIPE_PRICE_ANNUAL,      // price_1SP4bhFLObIryadOc3nobvlX
 };
 
 export async function POST(request: NextRequest) {

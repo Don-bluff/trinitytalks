@@ -23,18 +23,20 @@ const relevantEvents = new Set([
 ]);
 
 /**
- * Upsert user_subscriptions — same schema as bluffcatcher
+ * Upsert trinity_subscriptions (trinitytalks 独立表)
  */
 async function activateSubscription(
   userId: string,
   subscriptionId: string,
   customerId: string | null,
   periodStart: string,
-  periodEnd: string | null
+  periodEnd: string | null,
+  email?: string
 ) {
-  const { error } = await getAdmin().from("user_subscriptions").upsert(
+  const { error } = await getAdmin().from("trinity_subscriptions").upsert(
     {
       user_id: userId,
+      email: email || null,
       plan: "pro",
       status: "active",
       provider: "stripe",
@@ -47,7 +49,7 @@ async function activateSubscription(
     { onConflict: "user_id" }
   );
   if (error) {
-    console.error("❌ user_subscriptions upsert failed:", error);
+    console.error("❌ trinity_subscriptions upsert failed:", error);
     throw new Error(`activateSubscription failed: ${error.message}`);
   }
   console.log(`✅ Activated subscription for user ${userId} (sub: ${subscriptionId}, customer: ${customerId})`);
@@ -55,7 +57,7 @@ async function activateSubscription(
 
 async function deactivateSubscription(subscriptionId: string) {
   const { data, error: queryError } = await getAdmin()
-    .from("user_subscriptions")
+    .from("trinity_subscriptions")
     .select("user_id")
     .eq("provider_sub_id", subscriptionId)
     .single();
@@ -71,7 +73,7 @@ async function deactivateSubscription(subscriptionId: string) {
   if (!data) return;
 
   const { error } = await getAdmin()
-    .from("user_subscriptions")
+    .from("trinity_subscriptions")
     .update({
       plan: "free",
       status: "expired",
@@ -133,7 +135,8 @@ export async function POST(request: NextRequest) {
             subId,
             session.customer as string,
             periodStart,
-            periodEnd
+            periodEnd,
+            session.customer_details?.email || undefined
           );
         }
         break;
@@ -158,7 +161,7 @@ export async function POST(request: NextRequest) {
           ? new Date(item.current_period_end * 1000).toISOString()
           : null;
 
-        await activateSubscription(userId, subId, sub.customer as string, periodStart, periodEnd);
+        await activateSubscription(userId, subId, sub.customer as string, periodStart, periodEnd, invoice.customer_email || undefined);
         break;
       }
 
