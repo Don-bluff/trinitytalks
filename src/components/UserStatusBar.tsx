@@ -15,14 +15,12 @@ export default function UserStatusBar() {
   useEffect(() => {
     const supabase = createClient();
 
-    // Initial session check
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUser(user);
       if (user) checkPro(supabase);
       else setLoading(false);
     });
 
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         const u = session?.user ?? null;
@@ -58,45 +56,44 @@ export default function UserStatusBar() {
 
   function emailAbbrev(email: string) {
     const [local] = email.split("@");
-    return local.length > 10 ? local.slice(0, 10) + "…" : local;
+    return local.length > 8 ? local.slice(0, 8) + "…" : local;
   }
 
   if (loading) return null;
 
   return (
     <>
-      <div className="flex h-9 items-center justify-end gap-3 border-b border-[#1a1a1a] bg-[#0a0a0a]/60 px-5 text-xs md:px-8">
-        {!user ? (
-          <button
-            onClick={() => setShowAuth(true)}
-            className="text-[#888] transition-colors hover:text-[#06b6d4]"
-          >
-            登录 / 注册
-          </button>
-        ) : (
-          <>
-            <span className="text-[#555]">{emailAbbrev(user.email || "")}</span>
-            {isPro ? (
-              <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[11px] font-medium text-emerald-400">
-                Pro ✓
-              </span>
-            ) : (
-              <Link
-                href="/pricing"
-                className="rounded-full bg-[#06b6d4]/10 px-2 py-0.5 text-[11px] font-medium text-[#06b6d4] transition-colors hover:bg-[#06b6d4]/20"
-              >
-                升级 Pro
-              </Link>
-            )}
-            <button
-              onClick={handleLogout}
-              className="text-[#555] transition-colors hover:text-[#999]"
+      {/* Inline items — rendered inside the header nav */}
+      {!user ? (
+        <button
+          onClick={() => setShowAuth(true)}
+          className="text-[13px] text-[#888] transition-colors hover:text-[#06b6d4]"
+        >
+          登录
+        </button>
+      ) : (
+        <>
+          <span className="text-[12px] text-[#555]">{emailAbbrev(user.email || "")}</span>
+          {isPro ? (
+            <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[11px] font-medium text-emerald-400">
+              Pro ✓
+            </span>
+          ) : (
+            <Link
+              href="/pricing"
+              className="rounded-full bg-[#06b6d4]/10 px-2 py-0.5 text-[11px] font-medium text-[#06b6d4] transition-colors hover:bg-[#06b6d4]/20"
             >
-              退出
-            </button>
-          </>
-        )}
-      </div>
+              升级
+            </Link>
+          )}
+          <button
+            onClick={handleLogout}
+            className="text-[12px] text-[#555] transition-colors hover:text-[#999]"
+          >
+            退出
+          </button>
+        </>
+      )}
 
       {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
     </>

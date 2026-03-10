@@ -23,7 +23,6 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <body className={`${geistSans.variable} antialiased`}>
-        <UserStatusBar />
         <header className="sticky top-0 z-50 border-b border-[#1a1a1a] bg-[#0a0a0a]/80 backdrop-blur-xl">
           <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between px-5 md:px-8">
             <Link href="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-80">
@@ -32,8 +31,10 @@ export default function RootLayout({
             </Link>
             <nav className="flex items-center gap-5">
               <Link href="/column" className="text-[13px] text-[#888] transition-colors hover:text-[#06b6d4]">专栏</Link>
-              <Link href="/money" className="text-[13px] text-[#888] transition-colors hover:text-[#06b6d4]">搞钱</Link>
-              <Link href="/pricing" className="text-[13px] text-[#888] transition-colors hover:text-[#06b6d4]">订阅</Link>
+              <Link href="/" className="text-[13px] text-[#888] transition-colors hover:text-[#06b6d4]">搞钱</Link>
+              <Link href="/" className="text-[13px] text-[#888] transition-colors hover:text-[#06b6d4]">订阅</Link>
+              <span className="mx-1 h-4 w-px bg-[#1a1a1a]" />
+              <UserStatusBar />
             </nav>
           </div>
         </header>
