@@ -9,7 +9,7 @@ const plans = [
     period: "/月",
     description: "按月订阅三元专栏",
     priceEnv: "monthly",
-    features: ["无限阅读所有专栏文章", "搞钱之路完整内容", "新内容第一时间推送"],
+    features: ["无限阅读所有专栏文章", "搞钱之路完整内容"],
   },
   {
     name: "年付",
@@ -18,7 +18,7 @@ const plans = [
     description: "年度订阅 · 省 $10",
     priceEnv: "annual",
     badge: "省17%",
-    features: ["月付全部权益", "年度会员专属内容", "优先参与社区活动"],
+    features: ["月付全部权益", "年度会员专属内容"],
   },
 ];
 
